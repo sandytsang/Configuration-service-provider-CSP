@@ -3,7 +3,7 @@ Connect-MSGraph
 $omaSettingsList = $null
 $omaSettingsList = @()
 
-<#
+<#List all the CSPs manually
 [array]$omaurls = "./Device/Vendor/MSFT/BitLocker/RequireDeviceEncryption", "./Device/Vendor/MSFT/BitLocker/RequireDeviceEncryptafaf"
 foreach ($omaurl in $omaurls) {
     $omasetting = New-OmaSettingObject -displayName 01Test -omaUri "$omaurl" -omaSettingInteger -value 0
@@ -11,7 +11,7 @@ foreach ($omaurl in $omaurls) {
 }
 #>
 
-<#
+<#Gets Policy CSP from WMI
 $PolicyCSPs = Get-CimClass -ClassName MDM_* -Namespace "root\cimv2\mdm\dmmap" | Where-Object { $_.CimClassName -notmatch "^MDM_Policy" } |  Sort-Object -Property CimClassName
 Foreach ($PolicyCSP in $PolicyCSPs) {
     $CimClassName = $($PolicyCSP.CimClassName)
