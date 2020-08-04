@@ -14,13 +14,13 @@ foreach ($omaurl in $omaurls) {
 
 $PolicyCSPs = Get-CimClass -ClassName MDM_* -Namespace "root\cimv2\mdm\dmmap" | Where-Object {$_.CimClassName -notmatch "^MDM_Policy"} |  Sort-Object -Property CimClassName
 Foreach ($PolicyCSP in $PolicyCSPs) {
-    $CimClassName = $($PolicyCSP.CimClassName)
-    $PolicyName = $CimClassName -replace "MDM_" -replace "_01" -replace "01" -replace "02" -replace "03" -replace "04"   
+    $($PolicyCSP.CimClassName) -match "[^MDM_].*[a-z]" | Out-Null
+    $PolicyName = $matches.Values 
     $CimClassProperties = $($PolicyCSP.CimClassProperties).Name | Where-Object {$_ -ne "ParentID" -and $_ -ne "PSComputerName" -and $_ -ne "InstanceID"}
     foreach ($CimClassPropertie in $CimClassProperties) {
     $Omaurl = ("./Vendor/MSFT/$PolicyName/$CimClassPropertie").Replace("_","/")
     $Omaurl
-    $omasetting = New-OmaSettingObject -displayName "$CimClassPropertie" -omaUri "$omaurl" -omaSettingInteger -value 1
+    $omasetting = New-OmaSettingObject -displayName "$CimClassPropertie" -omaUri "$omaurl" -omaSettingString -value "1"
     $omaSettingsList += $omasetting
     }
 }
